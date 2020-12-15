@@ -12,7 +12,7 @@ func InitAccountRoutes(router *gin.RouterGroup) {
 }
 
 func getAccount(c *gin.Context) {
-	c.JSON(http.StatusOK, "pong")
+	c.String(http.StatusOK, "pong")
 }
 
 func createAccount(c *gin.Context) {

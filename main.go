@@ -1,10 +1,10 @@
 package main
 
 import (
-	"go-rest-demo/routes"
 	"log"
 
-	"github.com/gin-gonic/gin"
+	routes "github.com/agnjunio/go-rest-demo/routes"
+
 	"github.com/joho/godotenv"
 )
 
@@ -14,18 +14,10 @@ func main() {
 		log.Println(".env file not found")
 	}
 
-	router := initRouter()
+	router := routes.InitRouter()
 
 	err = router.Run()
 	if err != nil {
 		log.Fatal("Failed to start server")
 	}
-}
-
-func initRouter() *gin.Engine {
-	router := gin.Default()
-	routes.InitAccountRoutes(router.Group("/accounts"))
-	routes.InitTransactionRoutes(router.Group("/transactions"))
-
-	return router
 }
