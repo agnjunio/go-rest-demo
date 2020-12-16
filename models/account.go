@@ -9,7 +9,7 @@ import (
 
 type Account struct {
 	AccountID      primitive.ObjectID `json:"account_id,omitempty" bson:"_id,omitempty"`
-	DocumentNumber string             `json:"document_number" binding:"required" bson:"documentNumber"`
+	DocumentNumber string             `json:"document_number" binding:"required" bson:"document_number"`
 }
 
 func (a Account) JSON() []byte {

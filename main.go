@@ -18,7 +18,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Unable to connect to database.")
 	}
-	defer database.Disconnect(mongo)
 
 	router := routes.InitRouter(mongo)
 
@@ -26,4 +25,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to start server")
 	}
+
+	defer database.Disconnect(mongo)
 }

@@ -12,8 +12,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-const Collection = "accounts"
-
 func InitAccountRoutes(router *gin.RouterGroup) {
 	router.POST("/", createAccount)
 	router.GET("/:id", getAccount)
@@ -22,7 +20,7 @@ func InitAccountRoutes(router *gin.RouterGroup) {
 func getAccount(c *gin.Context) {
 	id, _ := primitive.ObjectIDFromHex(c.Param("id"))
 	client := c.MustGet("mongo").(*mongo.Client)
-	collection := database.GetDB(client).Collection(Collection)
+	collection := database.GetDB(client).Collection(database.AccountsCollection)
 
 	account := models.Account{}
 	err := collection.FindOne(context.TODO(), bson.M{"_id": id}).Decode(&account)
@@ -38,16 +36,16 @@ func getAccount(c *gin.Context) {
 }
 
 func createAccount(c *gin.Context) {
-	account := models.Account{}
+	var account models.Account
 
 	if err := c.BindJSON(&account); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Account validation failed.",
+			"message": "Request validation failed.",
 			"error":   err.Error(),
 		})
 	} else {
 		client := c.MustGet("mongo").(*mongo.Client)
-		collection := database.GetDB(client).Collection(Collection)
+		collection := database.GetDB(client).Collection(database.AccountsCollection)
 
 		result, err := collection.InsertOne(context.TODO(), account)
 		if err != nil {

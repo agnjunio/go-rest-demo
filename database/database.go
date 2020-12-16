@@ -14,6 +14,12 @@ import (
 
 const mongoTimeout = 10
 
+const (
+	AccountsCollection       = "accounts"
+	TransactionsCollection   = "transactions"
+	OperationTypesCollection = "operationTypes"
+)
+
 func GetDB(client *mongo.Client) *mongo.Database {
 	// Send patch MongoDB driver to include an method to get the Default Database.
 	const database = "pismo-demo"
