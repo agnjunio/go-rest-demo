@@ -1,0 +1,78 @@
+name: Main
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ v* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+
+    name: Build
+    runs-on: ubuntu-20.04
+    steps:
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.15.6
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: |
+        go get -v -t -d ./...
+        if [ -f Gopkg.toml ]; then
+            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+            dep ensure
+        fi
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.3.0
+      with:
+        mongodb-version: 4.4.2
+
+    - name: Test
+      env:
+        MONGO_URI: mongodb://localhost:27017/
+      run: go test -v ./...
+
+  publish:
+
+    name: Publish Docker Image
+    needs: build
+    runs-on: ubuntu-20.04
+    if: github.event_name == 'push'
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Build Image
+        run: docker build . --file Dockerfile --tag app
+
+      - name: Login into DockerHub registry
+        run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USER }} --password-stdin
+
+      - name: Push image
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "main" ] && VERSION=latest
+
+          echo VERSION=$VERSION
+
+          docker tag app ${{ github.repository }}:$VERSION
+          docker push ${{ github.repository }}:$VERSION 
+
