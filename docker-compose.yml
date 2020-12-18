@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+
+  mongo:
+    restart: unless-stopped
+    image: mongo:latest
+    volumes:
+      - ./mongo-data:/data/db
+
+  api:
+    restart: unless-stopped
+    image: agnjunio/go-rest-demo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/
+    ports:
+      - 80:80
