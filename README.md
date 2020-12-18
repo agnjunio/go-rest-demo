@@ -41,4 +41,4 @@ The API should be available in the default port: `http://localhost:8080/`. To ch
 
 ## API Documentation
 
-TBD
+Once the API is up, you can go to the `/docs` to view the API documentation in Swagger UI.

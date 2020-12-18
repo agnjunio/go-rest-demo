@@ -1,0 +1,176 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "go-rest-demo api documentation",
+    "version": "1.0.0",
+    "title": "go-rest-demo",
+    "contact": {
+      "email": "agnaldo.junior01@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "accounts",
+      "description": "Accounts management"
+    },
+    {
+      "name": "transactions",
+      "description": "Access to Petstore orders"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "paths": {
+    "/accounts": {
+      "post": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Create a new account",
+        "description": "",
+        "operationId": "addAccount",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "account",
+            "description": "New account information",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Account"
+            }
+          }
+        ],
+        "responses": {
+          "301": {
+            "description": "Account created",
+            "schema": {
+              "$ref": "#/definitions/Account"
+            }
+          },
+          "404": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/accounts/{id}": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Find account by ID",
+        "description": "Returns a single account",
+        "operationId": "getAccountById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of account",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Account"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Account not found"
+          }
+        }
+      }
+    },
+    "/transactions": {
+      "post": {
+        "tags": [
+          "transactions"
+        ],
+        "summary": "Create transaction",
+        "description": "",
+        "operationId": "createTransaction",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Transaction input",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          }
+        ],
+        "responses": {
+          "301": {
+            "description": "Created transaction",
+            "schema": {
+              "$ref": "#/definitions/Transaction"
+            }
+          },
+          "400": {
+            "description": "Failed to create transaction"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Account": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "default": "id",
+          "readOnly": true
+        },
+        "document_number": {
+          "type": "string",
+          "description": "Document Number"
+        }
+      }
+    },
+    "Transaction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "readOnly": true
+        },
+        "account_id": {
+          "type": "string",
+          "default": "id"
+        },
+        "operation_type_id": {
+          "type": "string",
+          "default": "id"
+        },
+        "amount": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}

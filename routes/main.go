@@ -15,6 +15,9 @@ func InitRouter(mongo *mongo.Client) *gin.Engine {
 		})
 	}
 
+	// Init swagger docs
+	router.Static("/docs", "./swagger-ui-dist")
+
 	InitAccountRoutes(router.Group("/accounts"))
 	InitTransactionRoutes(router.Group("/transactions"))
 
